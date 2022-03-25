@@ -1,5 +1,5 @@
 /*
- * FreeRTOS V202012.00
+ * FreeRTOS V201906.00 Major
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -23,75 +23,52 @@
  * http://www.FreeRTOS.org
  */
 
+
 #ifndef __AWS_CLIENTCREDENTIAL__H__
 #define __AWS_CLIENTCREDENTIAL__H__
 
-/* @TEST_ANCHOR */
+/*
+ * Include for device certificate and private key
+ */
+#include "aws_clientcredential_keys.h"
 
 /*
- * @brief MQTT Broker endpoint.
- *
- * @todo Set this to the fully-qualified DNS name of your MQTT broker.
+ * MQTT Broker endpoint.
  */
-#ifndef clientcredentialMQTT_BROKER_ENDPOINT
-    #define clientcredentialMQTT_BROKER_ENDPOINT    ""
-#endif
+#define clientcredentialMQTT_BROKER_ENDPOINT "a3drzv8hj59aqg-ats.iot.eu-north-1.amazonaws.com"
+
+
+/* Use of a "define" and not a "static const" here to be able to
+* use pre-compile concatenation on the string. */
+#define clientcredentialIOT_THING_NAME "esp32_devkitc_fabian"
 
 /*
- * @brief Host name.
- *
- * @todo Set this to the unique name of your IoT Thing.
- * Please note that for convenience of demonstration only we
- * are using a #define here. In production scenarios the thing
- * name can be something unique to the device that can be read
- * by software, such as a production serial number, rather
- * than a hard coded constant.
+ * Port number the MQTT broker is using.
  */
-#ifndef clientcredentialIOT_THING_NAME
-    #define clientcredentialIOT_THING_NAME    ""
-#endif
+#define clientcredentialMQTT_BROKER_PORT 8883
 
 /*
- * @brief Port number the MQTT broker is using.
+ * Port number the Green Grass Discovery use for JSON retrieval from cloud is
+ * using.
  */
-#ifndef clientcredentialMQTT_BROKER_PORT
-    #define clientcredentialMQTT_BROKER_PORT    8883
-#endif
+#define clientcredentialGREENGRASS_DISCOVERY_PORT 8443
 
 /*
- * @brief Port number the Green Grass Discovery use for JSON retrieval from cloud is using.
+ * Wi-Fi network to join.
  */
-#ifndef clientcredentialGREENGRASS_DISCOVERY_PORT
-    #define clientcredentialGREENGRASS_DISCOVERY_PORT    8443
-#endif
+#define clientcredentialWIFI_SSID       "COMHEM_1bab64"
 
 /*
- * @brief Wi-Fi network to join.
- *
- * @todo If you are using Wi-Fi, set this to your network name.
+ * Password needed to join Wi-Fi network.
  */
-#ifndef clientcredentialWIFI_SSID
-    #define clientcredentialWIFI_SSID    ""
-#endif
+#define clientcredentialWIFI_PASSWORD   "et4mznkf"
 
-/*
- * @brief Password needed to join Wi-Fi network.
- * @todo If you are using WPA, set this to your network password.
+/**
+ * @brief Security type
+ * WPA2 Security, @see WIFISecurity_t
+ * Possible values are - eWiFiSecurityOpen, eWiFiSecurityWEP, eWiFiSecurityWPA,
+ * eWiFiSecurityWPA2
  */
-#ifndef clientcredentialWIFI_PASSWORD
-    #define clientcredentialWIFI_PASSWORD    ""
-#endif
+#define clientcredentialWIFI_SECURITY   eWiFiSecurityWPA2
 
-/*
- * @brief Wi-Fi network security type.
- *
- * @see WIFISecurity_t.
- *
- * @note Possible values are eWiFiSecurityOpen, eWiFiSecurityWEP, eWiFiSecurityWPA,
- * eWiFiSecurityWPA2 (depending on the support of your device Wi-Fi radio).
- */
-#ifndef clientcredentialWIFI_SECURITY
-    #define clientcredentialWIFI_SECURITY    eWiFiSecurityWPA2
 #endif
-
-#endif /* ifndef __AWS_CLIENTCREDENTIAL__H__ */

@@ -31,7 +31,12 @@
  * @brief Certificate used for validating code signing signatures in the OTA PAL.
  */
 #ifndef otapalconfigCODE_SIGNING_CERTIFICATE
-    #define otapalconfigCODE_SIGNING_CERTIFICATE    "Insert code signing certificate..."
+    #define otapalconfigCODE_SIGNING_CERTIFICATE  \
+    "-----BEGIN PRIVATE KEY-----\n"\
+    "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgcyRqtJhENyVvNJ6x\n"\
+    "Ac+rc4iQguvTr82SsLb2DrRWvA+hRANCAATEeSQctTWnZXT8Tz16nVwugsn79Tvz\n"\
+    "ylBjHESaVceVrTOrv89oHokWRp/2mod53tzWr5Euph16imH05+vvCksP\n"\
+    "-----END PRIVATE KEY-----\n";
 #endif
 
 /**
