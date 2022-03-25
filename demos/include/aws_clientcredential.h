@@ -56,12 +56,12 @@
 /*
  * Wi-Fi network to join.
  */
-#define clientcredentialWIFI_SSID       "COMHEM_1bab64"
+#define clientcredentialWIFI_SSID       "OnePlus"
 
 /*
  * Password needed to join Wi-Fi network.
  */
-#define clientcredentialWIFI_PASSWORD   "et4mznkf"
+#define clientcredentialWIFI_PASSWORD   "9f6b63yy"
 
 /**
  * @brief Security type

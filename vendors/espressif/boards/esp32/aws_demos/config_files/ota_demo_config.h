@@ -32,11 +32,16 @@
  */
 #ifndef otapalconfigCODE_SIGNING_CERTIFICATE
     #define otapalconfigCODE_SIGNING_CERTIFICATE  \
-    "-----BEGIN PRIVATE KEY-----\n"\
-    "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgcyRqtJhENyVvNJ6x\n"\
-    "Ac+rc4iQguvTr82SsLb2DrRWvA+hRANCAATEeSQctTWnZXT8Tz16nVwugsn79Tvz\n"\
-    "ylBjHESaVceVrTOrv89oHokWRp/2mod53tzWr5Euph16imH05+vvCksP\n"\
-    "-----END PRIVATE KEY-----\n";
+        "-----BEGIN CERTIFICATE-----\n" \
+        "MIIBajCCARCgAwIBAgIUNyZvPhwOrxK7x1ddJIZxiiwYl8MwCgYIKoZIzj0EAwIw\n" \
+        "IjEgMB4GA1UEAwwXZmFiaWFuLnNlZ2F0ekBnbWFpbC5jb20wHhcNMjIwMzI0MTQ1\n" \
+        "MTA2WhcNMjMwMzI0MTQ1MTA2WjAiMSAwHgYDVQQDDBdmYWJpYW4uc2VnYXR6QGdt\n" \
+        "YWlsLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMR5JBy1NadldPxPPXqd\n" \
+        "XC6Cyfv1O/PKUGMcRJpVx5WtM6u/z2geiRZGn/aah3ne3NavkS6mHXqKYfTn6+8K\n" \
+        "Sw+jJDAiMAsGA1UdDwQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzAKBggqhkjO\n" \
+        "PQQDAgNIADBFAiBCvMKTlR335qRuHUDihU3us6n3vcAGGy+hPwOJnnW4JwIhALAv\n" \
+        "VICxQV+rKvozUek0aUtVmn7tYcZA17x78DYRtLbR\n" \
+        "-----END CERTIFICATE-----\n"
 #endif
 
 /**

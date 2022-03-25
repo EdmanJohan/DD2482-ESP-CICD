@@ -142,7 +142,7 @@
  * testing purpose and it is recommended to always update to higher version and keep this
  * configuration disabled.
  */
-#define otaconfigAllowDowngrade                 0U
+#define otaconfigAllowDowngrade                 1U
 
 /**
  * @brief The protocol selected for OTA control operations.
