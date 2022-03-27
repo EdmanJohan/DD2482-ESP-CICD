@@ -37,6 +37,7 @@
 
 /* Includes for library initialization. */
 #include "iot_demo_runner.h"
+#include "dd2482_demo.h"
 #include "platform/iot_threads.h"
 #include "types/iot_network_types.h"
 
@@ -92,5 +93,10 @@ void DEMO_RUNNER_RunDemos( void )
     Iot_CreateDetachedThread( runDemoTask,
                               &mqttDemoContext,
                               democonfigDEMO_PRIORITY,
+                              democonfigDEMO_STACKSIZE );
+
+    Iot_CreateDetachedThread( runTestDemo,
+                              NULL,
+                              (democonfigDEMO_PRIORITY - 1),
                               democonfigDEMO_STACKSIZE );
 }
