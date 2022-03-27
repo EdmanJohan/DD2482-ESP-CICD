@@ -1,0 +1,133 @@
+pipeline {
+    agent any
+    
+    environment {
+        IDF_PATH = '/var/jenkins_home/workspace/ESP32/vendors/espressif/esp-idf/'
+        PATH="$PATH:./vendors/espressif/esp-idf/components/esptool_py/esptool:./vendors/espressif/esp-idf/components/espcoredump:./vendors/espressif/esp-idf/components/partition_table:./vendors/espressif/esp-idf/components/app_update:/var/jenkins_home/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin:/var/jenkins_home/.espressif/tools/xtensa-esp32s2-elf/esp-2020r3-8.4.0/xtensa-esp32s2-elf/bin:/var/jenkins_home/.espressif/tools/esp32ulp-elf/2.28.51-esp-20191205/esp32ulp-elf-binutils/bin:/var/jenkins_home/.espressif/tools/esp32s2ulp-elf/2.28.51-esp-20191205/esp32s2ulp-elf-binutils/bin:/var/jenkins_home/.espressif/tools/openocd-esp32/v0.10.0-esp32-20200709/openocd-esp32/bin:/var/jenkins_home/.espressif/python_env/idf4.2_py3.9_env/bin:./vendors/espressif/esp-idf/tools:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    }    
+    
+    stages {
+        stage('Git') {
+            steps {
+                // Get some code from a GitHub repository
+                git branch: 'main', changelog: false, url: 'https://github.com/EdmanJohan/DD2482-ESP-CICD.git'
+                sh 'git submodule update --init --recursive'
+            }
+        }
+        
+        stage('Dependencies') {
+            steps {
+                sh './vendors/espressif/esp-idf/install.sh'
+            }
+        }
+        
+        stage('Build Firmware') {
+            steps {
+                sh 'idf.py -DVENDOR=espressif -DBOARD=esp32_wrover_kit -DCOMPILER=xtensa-esp32 build'
+            }
+        }
+        
+        stage('Upload to AWS') {
+            steps {
+                withAWS(credentials: 'aws-jenkins-creds', region: 'eu-north-1') {
+                    sh 'echo "Uploading content with AWS creds"'
+                    s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'build/aws_demos.bin', bucket:'fabian-esp32-devc')
+                }
+            }
+        }
+
+        stage('Sign firmware') {
+            steps {
+                sh 'echo "Fetching unsigned firmware file"'
+                withAWS(credentials: 'aws-jenkins-creds', region: 'eu-north-1') {
+                    script {
+                        env.VERSION_ID = sh (
+                            script: 'aws s3api list-object-versions --bucket fabian-esp32-devc --prefix aws --max-items 1 | grep -oP \'(?<="VersionId": ")[^"]*\'',
+                            returnStdout: true).trim()
+                    }
+                    
+                    script {
+                        env.SOURCE = sh (
+                            script: "echo 's3={bucketName=fabian-esp32-devc,key=aws_demos.bin,version=${env.VERSION_ID}}'",
+                            returnStdout: true).trim()
+                    }
+                    
+                    script {
+                        env.SIGNED = sh (
+                            script: "aws signer start-signing-job --source '${env.SOURCE}' --destination 's3={bucketName=fabian-esp32-devc, prefix=SignedImages/}' --profile-name esp32_ota_test_rev1 | grep -oP \'(?<=\"jobId\": \")[^\"]*\'",
+                            returnStdout: true).trim()
+                    }
+                    
+                    echo "Run: ${env.SIGNED}"
+                    
+                }
+            } 
+        }
+        
+        stage('Create OTA update') {
+            steps{
+                withAWS(credentials: 'aws-jenkins-creds', region: 'eu-north-1') {
+                    script {
+                        env.STREAM = sh (
+                            //script: "echo 'fileName=/,fileLocation={s3Location={bucket=fabian-esp32-devc,key=SignedImages/${env.SIGNED}}}'",
+                            script: "echo 'fileName=/,codeSigning={awsSignerJobId=${env.SIGNED}}'",
+                            returnStdout: true).trim()
+                    }
+                    
+                    sh "aws iot create-ota-update --ota-update-id ${env.SIGNED} --targets arn:aws:iot:eu-north-1:610108132265:thing/esp32_devkitc_fabian --files ${STREAM} --role-arn arn:aws:iam::610108132265:role/esp32-devc"
+                }
+            }
+        }
+        stage('Check OTA update status') {
+            options {
+                timeout(time: 180 , unit: 'SECONDS') 
+            }
+            steps {
+                withAWS(credentials: 'aws-jenkins-creds', region: 'eu-north-1') {
+                    script {
+                        sleep(10)
+                        
+                        env.OTASTATUS = sh (
+                                script: "aws iot describe-job --job-id AFR_OTA-${env.SIGNED} | grep -oP \'(?<=\"status\": \")[^\"]*\'",
+                                returnStdout: true).trim()
+                        
+                        while ((env.OTASTATUS != 'COMPLETED')) {
+                            echo "Status: ${env.OTASTATUS}"
+                            sleep(10)
+                            
+                            env.OTASTATUS = sh (
+                                script: "aws iot describe-job --job-id AFR_OTA-${env.SIGNED} | grep -oP \'(?<=\"status\": \")[^\"]*\'",
+                                returnStdout: true).trim()
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Test execution') {
+            options {
+                timeout(time: 2, unit: "MINUTES")
+            }
+            
+            steps {
+                script {
+                    hook = registerWebhook(token: "esp_callback")
+                    callbackURL = hook.url
+
+                    echo "Waiting for POST to ${callbackURL}"
+                    meaningOfLife = waitForWebhook hook
+
+                    if (meaningOfLife != '42') {
+                        echo "[ERROR] Meaning of life is not '${meaningOfLife}'!"
+                        echo "Expected: 'Meaning of Life is: 42', Got: 'Meaning of Life is: ${meaningOfLife}'"
+                        currentBuild.result = 'FAILED'
+                    } else {
+                        echo "[INFO] Meaning of life is '${meaningOfLife}'!"
+                        echo "[1/1]: Test success!"
+                    }
+                }
+            }
+        }
+        
+    }
+}
