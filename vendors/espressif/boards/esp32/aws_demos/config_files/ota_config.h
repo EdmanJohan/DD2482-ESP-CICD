@@ -106,7 +106,7 @@
  * based on how many data blocks response is expected for each data requests.
  * @note This must be set larger than zero.
  */
-#define otaconfigMAX_NUM_BLOCKS_REQUEST         4U
+#define otaconfigMAX_NUM_BLOCKS_REQUEST         6U
 
 /**
  * @brief The maximum number of requests allowed to send without a response before
