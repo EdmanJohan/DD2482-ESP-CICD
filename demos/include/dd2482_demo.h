@@ -4,7 +4,7 @@
 #include "aws_demo_config.h"
 
 // MEANING OF LIFE
-#define MEANING_OF_LIFE     "41"
+#define MEANING_OF_LIFE     "40"
 
 // IotThreadRoutine_t runTestDemo ()
 void runTestDemo( void * pArgument );
