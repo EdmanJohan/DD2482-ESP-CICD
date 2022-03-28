@@ -3,6 +3,9 @@
 
 #include "aws_demo_config.h"
 
+// MEANING OF LIFE
+#define MEANING_OF_LIFE     "41"
+
 // IotThreadRoutine_t runTestDemo ()
 void runTestDemo( void * pArgument );
 
@@ -126,7 +129,7 @@ void runTestDemo( void * pArgument );
 /**
  * @brief Request body to send for PUT and POST requests.
  */
-#define REQUEST_BODY                             "42"
+#define REQUEST_BODY                             MEANING_OF_LIFE
 
 /**
  * @brief Length of the request body.
