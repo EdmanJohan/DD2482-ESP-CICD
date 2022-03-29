@@ -118,12 +118,9 @@ pipeline {
                     meaningOfLife = waitForWebhook hook
 
                     if (meaningOfLife != '42') {
-                        echo "[ERROR] Meaning of life is not '${meaningOfLife}'!"
+                        echo "[Error] Meaning of life is not '${meaningOfLife}'!"
                         echo "Expected: 'Meaning of Life is: 42', Got: 'Meaning of Life is: ${meaningOfLife}'"
                         currentBuild.result = 'FAILED'
-                    } else {
-                        echo "[INFO] Meaning of life is '${meaningOfLife}'!"
-                        echo "[1/1]: Test success!"
                     }
                 }
             }
