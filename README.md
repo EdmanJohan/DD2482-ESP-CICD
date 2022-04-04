@@ -31,3 +31,8 @@ void runTestDemo( void * pArgument )
 }
 ```
 9b. A webhook in Jenkins catches the HTTPS post and compares the sent data with the expected data.
+
+
+The following [flowchart](./DemoWorkFlow.svg) illustrates the different steps of the demo,
+
+![WorkFlow](./DemoWorkFlow.svg)
