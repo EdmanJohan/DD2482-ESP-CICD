@@ -2,6 +2,12 @@
 
 _This repo holds the project files that were used for a demonstration in the course DD2482 "Automated Software Testing and DevOps"._
 
+## Pipeline overview
+The following [flowchart](https://raw.githubusercontent.com/EdmanJohan/DD2482-ESP-CICD/main/DemoWorkFlow.svg) gives an overview of the pipeline
+that made up the demonstration.
+
+![WorkFlow](./DemoWorkFlow.svg)
+
 ## How to setup
 
 1. Setup Jenkins server (with the [Jenkins pipline script](./jenkinsfile)) _Note: that some names must be changed to match your AWS setup_
@@ -31,8 +37,3 @@ void runTestDemo( void * pArgument )
 }
 ```
 9b. A webhook in Jenkins catches the HTTPS post and compares the sent data with the expected data.
-
-
-The following [flowchart](./DemoWorkFlow.svg) illustrates the different steps of the demo,
-
-![WorkFlow](./DemoWorkFlow.svg)
